@@ -1,0 +1,2 @@
+import Link from "next/link";
+export default function Home(){return <main className="landing"><div className="landing-card"><p className="eyebrow">AGENTIC BOT BUILDER</p><h1>Build Telegram bots from natural language.</h1><p className="muted">Phase 1 includes secure authentication and the foundation for your bot workspaces.</p><div className="actions"><Link className="button" href="/register">Create account</Link><Link className="button secondary" href="/login">Sign in</Link></div></div></main>}
