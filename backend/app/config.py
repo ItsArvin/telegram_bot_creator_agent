@@ -1,20 +1,33 @@
 from functools import lru_cache
-from pydantic import field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
+
+
 class Settings(BaseSettings):
-    model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8", extra="ignore")
+    model_config = SettingsConfigDict(
+        env_file=".env",
+        env_file_encoding="utf-8",
+        extra="ignore",
+    )
+
     environment: str = "development"
     database_url: str
     auth_secret: str = "change-me-in-development"
     encryption_key: str = "change-me-in-development"
     session_days: int = 7
     session_cookie_name: str = "atbb_session"
-    backend_cors_origins: list[str] = ["http://localhost:3000"]
-    @field_validator("backend_cors_origins", mode="before")
-    @classmethod
-    def parse_origins(cls, value):
-        if isinstance(value, str): return [x.strip() for x in value.split(",") if x.strip()]
-        return value
+    # Keep this as a plain string because Pydantic Settings parses list fields
+    # as JSON before field validators run. Vercel stores environment variables
+    # as strings, so comma-separated origins are easier and more robust here.
+    backend_cors_origins: str = "http://localhost:3000"
+
+    @property
+    def cors_origins(self) -> list[str]:
+        return [origin.strip() for origin in self.backend_cors_origins.split(",") if origin.strip()]
+
+
 @lru_cache
-def get_settings(): return Settings()
+def get_settings() -> Settings:
+    return Settings()
+
+
 settings = get_settings()
