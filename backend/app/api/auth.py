@@ -14,7 +14,7 @@ router = APIRouter(prefix="/auth", tags=["auth"])
 
 def set_session_cookie(response: Response, token: str) -> None:
     response.set_cookie(key=settings.session_cookie_name, value=token, httponly=True,
-        secure=settings.environment == "production", samesite="lax",
+        secure=settings.environment == "production", samesite="none" if settings.environment == "production" else "lax",
         max_age=settings.session_days * 24 * 60 * 60, path="/")
 
 @router.post("/register", response_model=UserResponse, status_code=status.HTTP_201_CREATED)

@@ -22,7 +22,9 @@ class Settings(BaseSettings):
 
     @property
     def cors_origins(self) -> list[str]:
-        return [origin.strip() for origin in self.backend_cors_origins.split(",") if origin.strip()]
+        configured = [origin.strip().rstrip("/") for origin in self.backend_cors_origins.split(",") if origin.strip()]
+        frontend_origin = "https://telegram-bot-creator-frontend.vercel.app"
+        return list(dict.fromkeys([*configured, frontend_origin]))
 
 
 @lru_cache
