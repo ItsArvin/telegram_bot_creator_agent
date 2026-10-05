@@ -1,25 +1,57 @@
 # Agentic Telegram Bot Builder
 
-Phase 1 implements authentication on top of the Phase 0 monorepo.
+The repository is a Vercel-first monorepo.
 
-## Phase 1
+- `frontend/` — Next.js web application
+- `backend/` — FastAPI control-plane API
+- Neon — PostgreSQL
 
-- PostgreSQL + SQLAlchemy async
-- Alembic migration
-- Argon2 password hashing via pwdlib
-- Opaque, hashed, expiring sessions
-- HttpOnly session cookie
-- Register / Login / Logout / Me APIs
-- Protected Next.js dashboard
-- Monochrome UI
+## Development workflow
 
-## Vercel development
+GitHub is the source of truth. Local execution is optional.
 
-The project is designed as a monorepo:
-- `frontend/` -> Next.js deployment
-- `backend/` -> FastAPI deployment
-- Neon -> PostgreSQL
+1. Push code to `main`.
+2. Vercel creates a deployment.
+3. Use the frontend deployment URL for browser testing.
+4. Use the backend deployment URL + `/docs` for API testing.
+5. Store production secrets only in Vercel Environment Variables.
+6. Keep database migrations in `backend/alembic/versions`.
 
-Local development is optional. The primary development workflow is GitHub -> Vercel preview deployments.
+The next phase is Bot Workspaces. Do not add Telegram or OpenRouter secrets until their phases are implemented.
 
-See `docs/development.md` for the phase plan.
+## Vercel projects
+
+Create two Vercel projects from this repository:
+
+### Frontend
+Root Directory: `frontend`
+Framework: Next.js
+
+Environment:
+`NEXT_PUBLIC_API_URL=https://YOUR-BACKEND.vercel.app/api/v1`
+
+### Backend
+Root Directory: `backend`
+Framework: FastAPI / Python
+Entrypoint: `main.py`
+
+Environment:
+`DATABASE_URL`
+`AUTH_SECRET`
+`ENCRYPTION_KEY`
+`ENVIRONMENT=production`
+`SESSION_DAYS=7`
+`SESSION_COOKIE_NAME=atbb_session`
+`BACKEND_CORS_ORIGINS=https://YOUR-FRONTEND.vercel.app`
+
+Apply the Alembic migration to the Neon database before testing registration.
+
+## Phase 1 manual test
+
+1. Open the frontend deployment.
+2. Register a user.
+3. Confirm redirect to `/dashboard`.
+4. Refresh the page and confirm the session survives.
+5. Sign out.
+6. Sign in again.
+7. Open the backend `/docs` endpoint and verify the health/auth endpoints.
