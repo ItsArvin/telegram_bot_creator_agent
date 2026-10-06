@@ -18,3 +18,4 @@ class BotWorkspace(Base):
     user: Mapped["User"] = relationship(back_populates="bot_workspaces")
     conversations: Mapped[list["Conversation"]] = relationship(back_populates="bot_workspace", cascade="all, delete-orphan")
     versions: Mapped[list["BotVersion"]] = relationship(back_populates="bot_workspace", cascade="all, delete-orphan", foreign_keys="BotVersion.bot_workspace_id")
+    telegram_credential: Mapped["TelegramCredential | None"] = relationship(back_populates="bot_workspace", uselist=False, cascade="all, delete-orphan")
