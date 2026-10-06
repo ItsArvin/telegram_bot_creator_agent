@@ -15,6 +15,7 @@ class Settings(BaseSettings):
     encryption_key: str = "change-me-in-development"
     session_days: int = 7
     session_cookie_name: str = "atbb_session"
+    auto_create_tables: bool = True
     # Keep this as a plain string because Pydantic Settings parses list fields
     # as JSON before field validators run. Vercel stores environment variables
     # as strings, so comma-separated origins are easier and more robust here.
