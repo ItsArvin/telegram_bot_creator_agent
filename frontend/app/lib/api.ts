@@ -1,8 +1,22 @@
-const API_URL = process.env.NEXT_PUBLIC_API_URL!;
-export async function api<T>(path:string, init:RequestInit={}):Promise<T>{
- const r=await fetch(API_URL+path,{...init,credentials:"include",headers:{"Content-Type":"application/json",...(init.headers??{})}});
- if(!r.ok){const b=await r.json().catch(()=>({}));throw new Error(b.detail??"Request failed")}
- if(r.status===204)return undefined as T;
- return r.json();
+const API_BASE = "/api/backend/api/v1";
+
+export async function api<T>(path: string, init: RequestInit = {}): Promise<T> {
+  const response = await fetch(API_BASE + path, {
+    ...init,
+    credentials: "include",
+    headers: {
+      "Content-Type": "application/json",
+      ...(init.headers ?? {}),
+    },
+  });
+
+  if (!response.ok) {
+    const body = await response.json().catch(() => ({}));
+    throw new Error(body.detail ?? `Request failed (${response.status})`);
+  }
+
+  if (response.status === 204) return undefined as T;
+  return response.json();
 }
-export type User={id:string;email:string;created_at:string};
+
+export type User = { id: string; email: string; created_at: string };
