@@ -1,6 +1,6 @@
 import type { NextConfig } from "next";
 
-const backendUrl = process.env.BACKEND_API_URL || process.env.NEXT_PUBLIC_API_URL;
+const configuredBackendUrl = process.env.BACKEND_API_URL || process.env.NEXT_PUBLIC_API_URL || "";\nconst backendUrl = configuredBackendUrl.replace(/\\/api\\/v1\\/?$/, "");
 
 const nextConfig: NextConfig = {
   reactStrictMode: true,
