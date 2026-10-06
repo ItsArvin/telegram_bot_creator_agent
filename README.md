@@ -17,7 +17,7 @@ GitHub is the source of truth. Local execution is optional.
 5. Store production secrets only in Vercel Environment Variables.
 6. Keep database migrations in `backend/alembic/versions`.
 
-The next phase is Bot Workspaces. Do not add Telegram or OpenRouter secrets until their phases are implemented.
+Phase 2 is implemented: authenticated users can create and manage persistent bot workspaces. Telegram, agent, and sandbox features remain deferred to their later phases.
 
 ## Vercel projects
 
