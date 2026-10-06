@@ -19,7 +19,7 @@ dependencies = [
   "langgraph>=1.0,<2.0",
   "langchain-openai>=1.0,<2.0",
   "vercel>=0.2,<1.0",
-  "psycopg[binary]>=3.2,<4.0",
+  "psycopg[binary]>=3.2,<4.0",\n  "cryptography>=44,<47",
 ]
 
 [tool.pytest.ini_options]
