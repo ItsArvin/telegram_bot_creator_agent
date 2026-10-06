@@ -1,3 +1,18 @@
 import type { NextConfig } from "next";
-const nextConfig: NextConfig = { reactStrictMode: true };
+
+const backendUrl = process.env.BACKEND_API_URL || process.env.NEXT_PUBLIC_API_URL;
+
+const nextConfig: NextConfig = {
+  reactStrictMode: true,
+  async rewrites() {
+    if (!backendUrl) return [];
+    return [
+      {
+        source: "/api/backend/:path*",
+        destination: `${backendUrl}/:path*`,
+      },
+    ];
+  },
+};
+
 export default nextConfig;
