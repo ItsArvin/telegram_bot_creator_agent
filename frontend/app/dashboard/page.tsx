@@ -7,7 +7,7 @@ type BotList = { items:Bot[]; total:number };
 export default function DashboardPage(){
  const router=useRouter(); const [user,setUser]=useState<User|null>(null); const [bots,setBots]=useState<Bot[]>([]);
  const [name,setName]=useState(""); const [description,setDescription]=useState(""); const [error,setError]=useState(""); const [creating,setCreating]=useState(false);
- async function load(){ try { const me=await api<User>("/auth/me"); setUser(me); setBots((await api<BotList>("/bots")).items); } catch { router.replace("/login"); } }
+ async function load(){ try { const me=await api<User>("/auth/me"); setUser(me); try { setBots((await api<BotList>("/bots")).items); } catch(err) { setError(err instanceof Error ? err.message : "Could not load bots"); } } catch(err) { if (err instanceof Error && err.message === "Authentication required") router.replace("/login"); else setError(err instanceof Error ? err.message : "Could not load dashboard"); } }
  useEffect(()=>{ void load(); },[router]);
  async function createBot(e:FormEvent){ e.preventDefault(); setError(""); if(!name.trim()) return; setCreating(true); try { const bot=await api<Bot>("/bots",{method:"POST",body:JSON.stringify({name:name.trim(),description:description.trim()||null})}); setBots(current=>[bot,...current]); setName(""); setDescription(""); } catch(err){ setError(err instanceof Error?err.message:"Could not create bot"); } finally { setCreating(false); } }
  async function deleteBot(id:string){ if(!window.confirm("Delete this bot workspace?")) return; try { await api<void>("/bots/"+id,{method:"DELETE"}); setBots(current=>current.filter(bot=>bot.id!==id)); } catch(err){ setError(err instanceof Error?err.message:"Could not delete bot"); } }
